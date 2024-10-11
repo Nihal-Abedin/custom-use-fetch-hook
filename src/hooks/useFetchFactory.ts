@@ -12,7 +12,7 @@ type CallbackOptions = {
     onSuccess?: (data: unknown) => void;
     onError?: (error: unknown) => void;
 }
-export const useQuery = (
+const useQuery = (
     path: string,
     options?: CallbackOptions & FetchConfigType
 ) => {
@@ -27,7 +27,7 @@ export const useQuery = (
     }, [data, error, options]);
     return { data, error, isError, isLoading };
 };
-export const useMutation = (
+const useMutation = (
     path: string,
     options?: {
         method?: "POST" | "PATCH" | "PUT" | "DELETE";
@@ -70,3 +70,4 @@ export const useMutation = (
         isError,
     };
 };
+export { useQuery,useMutation };
