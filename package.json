@@ -1,7 +1,11 @@
 {
-  "name": "fetch-query-v2",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@annonalpha/use-fetch-hook",
+  "version": "0.1.0",
+  "main": "dist/use-fetch-hook.umd.js",
+  "module": "dist/use-fetch-hook.es.js",
+  "files": [
+    "dist/*"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@annonalpha/use-fetch-hook": "^0.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
