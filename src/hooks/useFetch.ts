@@ -3,12 +3,13 @@ import { getFromCache, setToCache } from "./cache"; // Implement these cache fun
 import { authFetch } from "./authFetch";
 import { useWindowFocus } from "./useWindowFocus";
 import { FetchConfigType } from "../utils/fetchConfig";
-type RequestOptions = {
+export type RequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   body?: string | FormData;
   headers?: HeadersInit;
   BASE_URL?: string;
 }
+const BASE_URL = import.meta.env.VITE_BASE_URL
 export const useFetch = (
   requestUrl: string,
   options?: RequestOptions & FetchConfigType
@@ -18,11 +19,10 @@ export const useFetch = (
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(null);
   const isWindowFocused = useWindowFocus(); // Get window focus state
-
   const paramOptions: RequestOptions = {
     method: "GET",
-    BASE_URL: 'https://natours-sable-three.vercel.app/api/v1',
     ...options,
+    BASE_URL: options.BASE_URL || BASE_URL,
   }
   const fetchData = useCallback(async (ignoreCache = false) => {
 
@@ -68,9 +68,10 @@ export const useFetch = (
         }, options.cacheTime);
       }
     } catch (err) {
+      const errRes = await err.json()
       setIsError(true);
-      setError(err);
-      console.error(err);
+      setError(errRes);
+      console.error(errRes);
     } finally {
       setIsLoading(false);
     }

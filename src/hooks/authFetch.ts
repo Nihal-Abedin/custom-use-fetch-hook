@@ -5,6 +5,7 @@
 //     user.token = token;
 //     localStorage.setItem('user', JSON.stringify(user));
 // }
+const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const authFetch = async (
     url: string,
@@ -51,7 +52,7 @@ export const authFetch = async (
 
     // Make the fetch request
     const response = await fetch(
-        `${options.OTHER_BASE_URL ? options.OTHER_BASE_URL : options.BASE_URL
+        `${options.OTHER_BASE_URL ? options.OTHER_BASE_URL : options.BASE_URL ? options.BASE_URL : BASE_URL
         }/${url}`,
         reqOptions
     );

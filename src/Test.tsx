@@ -1,29 +1,33 @@
 import "./App.css";
+import {  useCache } from "./hooks/cache";
 import { useMutation, useQuery } from "./hooks/useFetchFactory";
 
 function Test() {
-  const { isLoading, isError } = useQuery("posts", {
-    onSuccess(data) {
-      console.log("SUCCESSFULLY LOAD :", data);
-    },
-    onError(err) {
-      console.log("ERROR:", err);
-    },
-  });
+  const { cacheState } = useCache();
+  const { isLoading, isError, error } = useQuery(
+    "tours/5c88fa8cf4afda39709c2955",
+    {
+      onSuccess(data) {
+        console.log("SUCCESSFULLY LOAD :", data);
+      },
+      onError(err) {
+        console.log("ERROR:", err);
+      },
+    }
+  );
   const {
     mutate,
     data: mutateData,
     isError: mutateError,
-  } = useMutation("posts/", {
-    BASE_URL: "https://jsonplaceholder.typicode.com",
-  });
+  } = useMutation("tours");
   console.log(mutateData, mutateError);
   if (isLoading) {
     return <p>Loding...</p>;
   }
   if (isError) {
-    return <p>Error</p>;
+    return <p>{error.message}</p>;
   }
+  console.log(cacheState);
   return (
     <div>
       POSTS
@@ -33,7 +37,9 @@ function Test() {
           const formData = new FormData(e.currentTarget);
           const data = Object.fromEntries(formData);
           console.log(data);
-          mutate(JSON.stringify(data));
+          mutate(JSON.stringify(data),{onError(error) {
+            console.log(error)
+          },});
         }}
         style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
       >
