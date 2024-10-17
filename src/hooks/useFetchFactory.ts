@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFetch } from "./useFetch";
 import { authFetch } from "./authFetch";
-import { fetchConfig, FetchConfigType } from "../utils/fetchConfig";
+import { useFetchContext } from "./useFetchContext";
 
 // const useQueryCallback = () => {
 //     const [onSuccess,setOnSuccess] = useState(()=>{})
@@ -11,13 +11,14 @@ import { fetchConfig, FetchConfigType } from "../utils/fetchConfig";
 type CallbackOptions = {
     onSuccess?: (data: unknown) => void;
     onError?: (error: unknown) => void;
-    BASE_URL?: string
 }
 export const useQuery = (
     path: string,
-    options?: CallbackOptions & FetchConfigType
+    options?: CallbackOptions
 ) => {
-    const { data, error, isError, isLoading } = useFetch(path, { method: "GET", BASE_URL: options.BASE_URL, ...fetchConfig });
+    const { BASE_URL, ...restConfigOptions } = useFetchContext()
+    console.log(BASE_URL)
+    const { data, error, isError, isLoading } = useFetch(path, { method: "GET", BASE_URL: BASE_URL, ...restConfigOptions });
     useEffect(() => {
         if (options?.onSuccess && data) {
             options.onSuccess(data);
@@ -32,9 +33,10 @@ export const useMutation = (
     path: string,
     options?: {
         method?: "POST" | "PATCH" | "PUT" | "DELETE";
-        BASE_URL?: string;
     }
 ) => {
+    const { BASE_URL } = useFetchContext()
+
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -43,7 +45,7 @@ export const useMutation = (
     const doMutation = async (payload, callbacks?: CallbackOptions) => {
         setIsLoading(true);
         try {
-            const res = await authFetch(path, { body: payload, method: "POST", ...options });
+            const res = await authFetch(path, { body: payload, method: "POST", BASE_URL: BASE_URL, ...options });
             if (!res.ok) {
                 throw res;
             }
